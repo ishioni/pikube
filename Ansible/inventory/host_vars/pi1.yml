@@ -1,0 +1,3 @@
+---
+ansible_host: pi-da73b68e
+kube_controller: true
