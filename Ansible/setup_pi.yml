@@ -1,0 +1,111 @@
+---
+- hosts:
+    - all
+  tasks:
+
+  - name: Disable swap and apt-daily
+    service:
+      name: "{{ item }}"
+      state: stopped
+      enabled: no
+    loop:
+       - apt-daily.timer
+       - apt-daily-upgrade.timer
+       - dphys-swapfile.service
+       - triggerhappy.service
+
+  - name: Update OS
+    apt:
+      upgrade: yes
+      update_cache: yes
+
+  - name: Remove syslogd
+    apt:
+      name: rsyslog
+      state: absent
+      purge: yes
+
+  - name: Install prereqs
+    apt:
+      name: "{{ packages }}"
+      state: present
+    vars:
+      packages:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - busybox-syslogd
+      - vim
+      - mc
+      - libseccomp2
+      - gnupg
+
+  - name: Check if cmdline backup exists
+    stat:
+      path: /boot/cmdline.txt.orig
+    register: cmdlinebackup
+
+  - name: Create cmdline backup
+    copy:
+      remote_src: yes
+      src: /boot/cmdline.txt
+      dest: /boot/cmdline.txt.orig
+    when: not cmdlinebackup.stat.exists
+
+  - name: Get boot UUID
+    command: /sbin/blkid -s PARTUUID -o value /dev/mmcblk0p2
+    register: partuuid
+
+  - name: Enable cgroups
+    template:
+      src: templates/cmdline.txt.j2
+      dest: /boot/cmdline.txt
+    register: cmdlineupdated
+    when: partuuid is defined
+
+  - name: Add docker gpg key
+    apt_key:
+      url: https://download.docker.com/linux/raspbian/gpg
+      state: present
+
+  - name: Add docker repository
+    apt_repository:
+      filename: docker-ce
+      repo: deb https://download.docker.com/linux/raspbian stretch edge
+      state: present
+
+  - name: Install docker
+    apt:
+      name: docker-ce
+      install_recommends: no
+      state: latest
+
+  - name: Add k8s gpg key
+    apt_key:
+      url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+      state: present
+
+  - name: Add k8s repository
+    apt_repository:
+      filename: k8s
+      repo: deb http://apt.kubernetes.io kubernetes-stretch main
+      state: absent
+
+  - name: Add k8s repository
+    apt_repository:
+      filename: k8s
+      repo: deb http://apt.kubernetes.io kubernetes-xenial main
+      state: present
+
+  - name: Install k8s
+    apt:
+      name: kubeadm
+      state: latest
+    vars:
+      packages:
+        - kubeadm
+        - kubectl
+        - kubelet
+
+  - name: Reboot
+    reboot:
