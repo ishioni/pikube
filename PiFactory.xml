@@ -1,0 +1,49 @@
+<xml 
+  xmlns="http://www.w3.org/1999/xhtml">
+  <block type="onfirstboot" id="onfirstboot" x="73" y="48">
+    <next>
+      <block type="wifisetup" id="a7WWl*{nsV%X%_:mch~i">
+        <field name="1">MoviNet</field>
+        <field name="2">januszesieci2018</field>
+        <field name="3">WPA/WPA2</field>
+        <field name="4">PL</field>
+        <next>
+          <block type="runcommand" id="O-iW2%7F7l(?;SUvOi)(">
+            <field name="1">SERIALNUM=$(sed -n 's/^Serial\s*: 0*//p' /proc/cpuinfo); echo "pi-$SERIALNUM" &gt; /etc/hostname</field>
+            <field name="2">root</field>
+            <next>
+              <block type="runcommand" id="qcsxvLAN=C9l]Xf:l6y#">
+                <field name="1">mkdir -p /root/.ssh ; echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDQUOSDo89CtZcg02NKE6YrdkjnBo6Hp8rhTiOIBfwHddkAKQUpHIJTR0Do0soJNUFrhr9zk5Zf/fgZb8uCZlERaZmFcZfPjTAAIxw+uWPqNeNC+rSknU7h3CSm9exyi40aLquPVY+3dn9d2mboVSl7135yo/QPV3dQ8Ao1VwETHxq3mMpfViA5Af1aBBLmGLn9j7Pj9jZHIazQw5ch1Nbx6PdqUoKe+U8u1KEzpc9q7RurC8XdgFOsX/pA8gAMzIl0IZom1Gg4nhgkOy4QgQRDBNJucJyBRRum+omiK0Eov8K9NpZpjUgimd9lkt05YrkO1+n8wh/hPfwfk6WtZzdF movi@2B.lan" &gt; /root/.ssh/authorized_keys ; chmod 600 /root/.ssh/authorized_keys</field>
+                <field name="2">root</field>
+                <next>
+                  <block type="runcommand" id="@sd@AJr-Bk(y}=lP?|hT">
+                    <field name="1">echo "PermitRootLogin yes" &gt;&gt; /etc/ssh/sshd_config</field>
+                    <field name="2">root</field>
+                    <next>
+                      <block type="runcommand" id="-x91(d3}!6q6=!X|dR.G">
+                        <field name="1">systemctl enable ssh</field>
+                        <field name="2">root</field>
+                        <next>
+                          <block type="runcommand" id="Ij,j?i/_w-IZP=7GT;MK">
+                            <field name="1">userdel -r pi</field>
+                            <field name="2">root</field>
+                            <next>
+                              <block type="reboot" id="iR2?wRx!7VIb-.2L*LY#"></block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </next>
+  </block>
+  <firstboot 
+    xmlns="">0
+  </firstboot>
+</xml>
