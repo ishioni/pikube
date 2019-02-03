@@ -1,0 +1,2 @@
+---
+kubeadm config images pull

@@ -1,1 +1,1 @@
-dwc_otg.lpm_enable=0 console=serial0,115200 console=tty1 root=PARTUUID={{ partuuid.stdout }} rootfstype=ext4 elevator=deadline fsck.repair=yes cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1 rootwait
+dwc_otg.lpm_enable=0 console=serial0,115200 console=tty1 root=PARTUUID={{ partuuid.stdout }} rootfstype=ext4 elevator=deadline fsck.repair=yes cgroup_enable=cpuset cgroup_enable=memory cgroup_memory=1 ipv6.disable=1 rootwait
