@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitea-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gitea
+  template:
+    metadata:
+      labels:
+        app: gitea
+    spec:
+      containers:
+      - name: gitea-container
+        image: kunde21/gitea-arm:latest
+        ports:
+        - containerPort: 3000
+          name: http
+        - containerPort: 22
+          name: ssh
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitea-service
+spec:
+  selector:
+    app: gitea
+  ports:
+  - protocol: TCP
+    targetPort: 3000
+    port: 80
+    name: http
+  - protocol: TCP
+    targetPort: 22
+    port: 22
+    name: ssh
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: gitea.pikube.movishell.pl
+  namespace: default
+spec:
+  rules:
+  - host: gitea.pikube.movishell.pl
+    http:
+      paths:
+      - backend:
+          serviceName: gitea-service
+          servicePort: 80
