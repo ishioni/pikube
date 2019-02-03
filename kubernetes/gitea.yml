@@ -3,6 +3,20 @@ kind: Namespace
 metadata:
   name: userapps
 ---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: gitea-claim
+  namespace: userapps
+  annotations:
+    volume.beta.kubernetes.io/storage-class: "managed-nfs-storage"
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -28,6 +42,13 @@ spec:
           name: http
         - containerPort: 22
           name: ssh
+        volumeMounts:
+          - name: nfs-pvc
+            mountPath: "/data"
+      volumes:
+        - name: nfs-pvc
+          persistentVolumeClaim:
+            claimName: gitea-claim
 ---
 apiVersion: v1
 kind: Service
@@ -51,7 +72,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: gitea.pikube.movishell.pl
-  namespace: default
+  namespace: userapps
 spec:
   rules:
   - host: gitea.pikube.movishell.pl
