@@ -6,6 +6,7 @@ metadata:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
+  namespace: kubernator
   labels:
     run: kubernator
   name: kubernator
@@ -42,6 +43,7 @@ spec:
       labels:
         run: kubernator
     spec:
+      serviceAccountName: kubernator
       containers:
       - image: baykonur/kubectl-proxy-rpi
         name: kubectl-proxy
