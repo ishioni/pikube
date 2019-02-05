@@ -64,6 +64,23 @@
       dest: /boot/cmdline.txt.orig
     when: not cmdlinebackup.stat.exists
 
+  - name: Check if config backup exists
+    stat:
+      path: /boot/config.txt.bak
+    register: configbackup
+
+  - name: Create config backup
+    copy:
+      remote_src: yes
+      src: /boot/config.txt
+      dest: /boot/config.txt.bak
+    when: not configbackup.stat.exists
+
+  - name: Set new config
+    copy:
+      src: files/config.txt
+      dest: /boot/config.txt
+
   - name: Get boot UUID
     command: /sbin/blkid -s PARTUUID -o value /dev/mmcblk0p2
     register: partuuid
