@@ -34,6 +34,7 @@
       - mc
       - libseccomp2
       - gnupg
+      - tmux
 
   - name: Check if cmdline backup exists
     stat:
