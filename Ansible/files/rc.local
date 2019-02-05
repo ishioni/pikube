@@ -1,0 +1,4 @@
+#!/bin/sh -e
+
+ifconfig wlan0 promisc
+exit 0

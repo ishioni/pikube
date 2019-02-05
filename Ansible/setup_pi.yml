@@ -81,6 +81,12 @@
       src: files/config.txt
       dest: /boot/config.txt
 
+  - name: Install rclocal
+    copy:
+      src: files/rc.local
+      dest: /etc/rc.local
+      mode: 0755
+
   - name: Get boot UUID
     command: /sbin/blkid -s PARTUUID -o value /dev/mmcblk0p2
     register: partuuid
