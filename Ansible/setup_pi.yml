@@ -81,6 +81,18 @@
       src: files/config.txt
       dest: /boot/config.txt
 
+  - name: Install health script
+    copy:
+      src: files/health
+      dest: /usr/bin/health
+      mode: 0755
+
+  - name: Install cpuburn
+    copy:
+      src: files/cpuburn-a53
+      dest: /usr/bin/cpuburn
+      mode: 0755
+
   - name: Install rclocal
     copy:
       src: files/rc.local
