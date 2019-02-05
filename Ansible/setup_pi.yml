@@ -36,6 +36,22 @@
       - gnupg
       - tmux
 
+  - name: Set avaible locales
+    copy:
+      src: files/locale.gen
+      dest: /etc/locale.gen
+    register: localechanged
+
+  - name: Set default locale
+    copy:
+      src: files/locale
+      dest: /etc/default/locale
+    when: localechanged
+
+  - name: Generate locales
+    command: /usr/sbin/locale-gen
+    when: localechanged
+
   - name: Check if cmdline backup exists
     stat:
       path: /boot/cmdline.txt.orig
