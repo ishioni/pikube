@@ -141,6 +141,7 @@
   - name: Install k8s
     apt:
       name: "{{ packages }}"
+      state: present
     vars:
       packages:
         - kubeadm
