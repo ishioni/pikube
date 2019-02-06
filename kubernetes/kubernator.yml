@@ -3,62 +3,24 @@ kind: Namespace
 metadata:
   name: kubernator
 ---
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  namespace: kubernator
-  labels:
-    run: kubernator
-  name: kubernator
----
-apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: ClusterRoleBinding
-metadata:
-  name: kubernator
-  labels:
-    run: kubernator
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: cluster-admin
-subjects:
-- kind: ServiceAccount
-  name: kubernator
-  namespace: kubernator
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: kubernator
   labels:
-    run: kubernator
+    k8s-app: kubernator
   name: kubernator
 spec:
   replicas: 1
   selector:
     matchLabels:
-      run: kubernator
+      k8s-app: kubernator
   template:
     metadata:
       labels:
-        run: kubernator
+        k8s-app: kubernator
     spec:
-      serviceAccountName: kubernator
       containers:
-      - image: baykonur/kubectl-proxy-rpi
-        name: kubectl-proxy
-        command: ["/kubectl"]
-        args:
-        - proxy
-        - -p
-        - "8080"
-        - --address
-        - 0.0.0.0
-        - --accept-hosts=^.*$
-        ports:
-        - containerPort: 8080
-          name: kubectl
-          protocol: TCP
       - image: dvdmuckle/kubernator-arm
         name: kubernator
         ports:
@@ -71,48 +33,13 @@ kind: Service
 metadata:
   namespace: kubernator
   labels:
-    run: kubernator
+    k8s-app: kubernator
   name: kubernator
 spec:
   ports:
   - port: 80
     protocol: TCP
     targetPort: 80
-    name: kubernator
-  - port: 8080
-    protocol: TCP
-    targetPort: 8080
-    name: kubectl
   selector:
-    run: kubernator
+    k8s-app: kubernator
   type: ClusterIP
----
-apiVersion: extensions/v1beta1
-kind: Ingress
-metadata:
-  name: kubernator.pikube.movishell.pl
-  namespace: kubernator
-spec:
-  rules:
-  - host: kubernator.pikube.movishell.pl
-    http:
-      paths:
-      - backend:
-          serviceName: kubernator
-          servicePort: 80
-      - backend:
-          serviceName: kubernator
-          servicePort: 8080
-        path: /version
-      - backend:
-          serviceName: kubernator
-          servicePort: 8080
-        path: /apis
-      - backend:
-          serviceName: kubernator
-          servicePort: 8080
-        path: /api
-      - backend:
-          serviceName: kubernator
-          servicePort: 8080
-        path: /swaggerapi
