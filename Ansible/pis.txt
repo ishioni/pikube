@@ -4,7 +4,3 @@
 4 - bcef326e
 5 - 5b2c9d0c
 6 - e5190d82
-
-
-
-echo heartbeat > /sys/class/leds/led0/trigger ; sleep 15 ; echo mmc 0> /sys/class/leds/led0/trigger
