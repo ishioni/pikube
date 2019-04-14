@@ -1,2 +1,3 @@
 k3s_version: v0.4.0-rc2
 systemd_dir: /etc/systemd/system
+controller_ip: "{{ hostvars[groups['controller'][0]]['ansible_host'] | default(groups['controller'][0]) }}"
