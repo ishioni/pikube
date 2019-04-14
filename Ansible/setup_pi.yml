@@ -110,43 +110,65 @@
     register: cmdlineupdated
     when: partuuid is defined
 
-  - name: Add docker gpg key
-    apt_key:
-      url: https://download.docker.com/linux/raspbian/gpg
-      state: present
-
-  - name: Add docker repository
-    apt_repository:
-      filename: docker-ce
-      repo: deb https://download.docker.com/linux/raspbian stretch edge
-      state: present
-
-  - name: Install docker
-    apt:
-      name: docker-ce=18.06.1~ce~3-0~raspbian
-      install_recommends: no
-      state: present
-
-  - name: Add k8s gpg key
-    apt_key:
-      url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
-      state: present
-
-  - name: Add k8s repository
-    apt_repository:
-      filename: k8s
-      repo: deb http://apt.kubernetes.io kubernetes-xenial main
-      state: present
-
-  - name: Install k8s
+  - name: Remove k8s
     apt:
       name: "{{ packages }}"
-      state: present
+      state: absent
     vars:
       packages:
         - kubeadm
         - kubectl
         - kubelet
 
+  - name: Remove k8s repository
+    apt_repository:
+      filename: k8s
+      repo: deb http://apt.kubernetes.io kubernetes-xenial main
+      state: absent
+
+  - name: Remove k8s gpg key
+    apt_key:
+      url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+      state: present
+
+  - name: Remove docker
+    apt:
+      name: docker-ce=18.06.1~ce~3-0~raspbian
+      install_recommends: no
+      state: absent
+
+  - name: Remove docker repository
+    apt_repository:
+      filename: docker-ce
+      repo: deb https://download.docker.com/linux/raspbian stretch edge
+      state: absent
+
+  - name: Remove docker gpg key
+    apt_key:
+      url: https://download.docker.com/linux/raspbian/gpg
+      state: present
+
   - name: Reboot
     reboot:
+
+  - name: Remove kubernetes leftovers
+    file:
+      state: absent
+      path: "{{ item }}"
+    loop:
+      - /etc/kubernetes
+      - /var/lib/containerd
+      - /var/lib/docker
+      - /var/lib/dockershim
+      - /var/lib/etcd
+      - /var/lib/weave
+      - /var/lib/kubelet
+      - /root/.kube
+      - /etc/cni
+      - /opt/cni
+      - /opt/containerd
+      - /etc/systemd/system/docker.service
+      - /etc/systemd/system/docker.socket
+      - /etc/systemd/system/kubelet.service
+      - /etc/systemd/system/kubelet.service.d
+      
