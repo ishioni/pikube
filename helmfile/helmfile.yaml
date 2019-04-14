@@ -1,0 +1,6 @@
+environments:
+  default:
+    values:
+      - defaultenv.yml
+helmfiles:
+  - apps/*/helmfile.yaml
