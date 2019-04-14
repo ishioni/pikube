@@ -1,0 +1,14 @@
+---
+# - name: Display gather_facts
+#   debug:
+#     var: hostvars[inventory_hostname]
+
+- name: Download k3s (armhf)
+  get_url:
+    url: https://github.com/rancher/k3s/releases/download/{{ k3s_version }}/k3s-armhf
+    dest: /usr/local/bin/k3s
+    owner: root
+    group: root
+    mode: 755
+  when: ( ansible_architecture == 'armv7l' and
+         ansible_facts.userspace_bits == '32' )
