@@ -1,0 +1,6 @@
+releases:
+- name: metallb
+  namespace: kube-system
+  chart: stable/metallb
+  values:
+    - metallb_params.yaml
