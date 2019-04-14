@@ -1,0 +1,23 @@
+---
+
+- name: Stop & disable k3s
+  systemd:
+    name: k3s
+    state: stopped
+    enabled: no
+
+#containerd will not stop, and it's too much of a hassle to track it down
+#blame rancher
+- name: Reboot
+  reboot:
+
+- name: Remove k3s leftovers
+  file:
+    state: absent
+    path: "{{ item }}"
+  loop:
+    - /etc/docker
+    - /etc/rancher
+    - /var/lib/cni
+    - /var/lib/rancher
+    
