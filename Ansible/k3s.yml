@@ -4,3 +4,9 @@
   become: yes
   roles:
     - { role: install }
+
+- hosts: controller
+  gather_facts: yes
+  become: yes
+  roles:
+    - { role: k3s/controller }

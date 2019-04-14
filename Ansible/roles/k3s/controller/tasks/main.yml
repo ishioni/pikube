@@ -1,0 +1,31 @@
+---
+
+- name: Install k3s systemd unit
+  register: k3s_service
+  template:
+    src: 'k3s.service.j2'
+    dest: '{{ systemd_dir }}/k3s.service'
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Enable k3s
+  systemd:
+    name: k3s
+    daemon_reload: yes
+    state: restarted
+    enabled: yes
+
+- name: Wait for master token
+  wait_for:
+    path: /var/lib/rancher/k3s/server/node-token
+    state: present
+
+- name: Read token from controller
+  slurp:
+    src: /var/lib/rancher/k3s/server/node-token
+  register: node_token
+
+- name: Store master token
+  set_fact:
+    token: "{{ node_token.content | b64decode | regex_replace('\n', '')}}"
