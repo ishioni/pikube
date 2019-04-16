@@ -10,5 +10,6 @@
     owner: root
     group: root
     mode: 755
+    force: yes
   when: ( ansible_architecture == 'armv7l' and
          ansible_facts.userspace_bits == '32' )
