@@ -1,0 +1,19 @@
+releases:
+  - name: kubernetes-dashboard
+    namespace: kube-system
+    chart: stable/kubernetes-dashboard
+    values:
+      - image:
+          repository: k8s.gcr.io/kubernetes-dashboard-arm
+        ingress:
+          enabled: true
+          hosts:
+            - dashboard.{{ .Environment.Values.domain | default "foo.com" }}
+        enableInsecureLogin: true
+        enableSkipLogin: true
+        rbac:
+          clusterAdminRole: true
+          clusterReadOnlyRole: true
+        service:
+          externalPort: 80
+          internalPort: 80
