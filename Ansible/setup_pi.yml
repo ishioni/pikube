@@ -20,6 +20,14 @@
       state: absent
       purge: yes
 
+  - name: Set systemd to volatile
+    lineinfile:
+      path: /etc/systemd/journald.conf
+      regexp: '^#Storage=auto'
+      state: present
+      line: 'Storage=volatile'
+      backrefs: yes
+
   - name: Install prereqs
     apt:
       name: "{{ packages }}"
@@ -171,4 +179,3 @@
       - /etc/systemd/system/docker.socket
       - /etc/systemd/system/kubelet.service
       - /etc/systemd/system/kubelet.service.d
-      
