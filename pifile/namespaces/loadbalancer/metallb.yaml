@@ -1,0 +1,28 @@
+repositories:
+# Stable repo of official helm charts
+- name: "stable"
+  url: "https://kubernetes-charts.storage.googleapis.com"
+
+releases:
+- name: "metallb"
+  namespace: "loadbalancer"
+  chart: "stable/metallb"
+  version: "0.12.0"
+  wait: true
+  values:
+    - configInline:
+        address-pools:
+          - name: lan
+            protocol: layer2
+            addresses:
+            - 10.1.1.96-10.1.1.112
+    - controller:
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+    - speaker:
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi

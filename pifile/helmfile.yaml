@@ -1,0 +1,3 @@
+helmfiles:
+  - "namespaces/loadbalancer/metallb.yaml"
+  - "namespaces/ingress/traefik.yaml"

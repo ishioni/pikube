@@ -1,4 +1,4 @@
-<xml 
+<xml
   xmlns="http://www.w3.org/1999/xhtml">
   <block type="onfirstboot" id="onfirstboot" x="73" y="48">
     <next>
@@ -43,7 +43,7 @@
       </block>
     </next>
   </block>
-  <firstboot 
+  <firstboot
     xmlns="">0
   </firstboot>
 </xml>

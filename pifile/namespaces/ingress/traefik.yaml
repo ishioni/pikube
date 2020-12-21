@@ -1,0 +1,72 @@
+repositories:
+# Stable repo of official helm charts
+- name: "stable"
+  url: "https://kubernetes-charts.storage.googleapis.com"
+
+releases:
+- name: "traefik"
+  namespace: "ingress"
+  chart: "stable/traefik"
+  version: "1.86.2"
+  wait: true
+  values:
+    - kubernetes:
+        ingressEndpoint:
+          useDefaultPublishedService: true
+    - serviceType: LoadBalancer
+    - externalTrafficPolicy: Local
+    - loadBalancerIP: "10.1.1.96"
+    - debug:
+        enabled: false
+    - deploymentStrategy:
+        rollingUpdate:
+          maxSurge: 1
+          maxUnavailable: 0
+        type: RollingUpdate
+    - proxyProtocol:
+        enabled: true
+        # trustedIPs is required when enabled
+        trustedIPs:
+          - 10.1.1.0/24
+          - 10.5.1.0/24
+          - 10.254.1.0/24
+      forwardedHeaders:
+        enabled: true
+        # trustedIPs is required when enabled
+        trustedIPs:
+          - 10.1.1.0/24
+          - 10.5.1.0/24
+          - 10.254.1.0/24
+    - ssl:
+        enabled: false
+        enforced: false
+        insecureSkipVerify: true
+        tlsMinVersion: "VersionTLS12"
+    - acme:
+        enabled: false
+        challengeType: dns-01
+        delayBeforeCheck: 30
+        staging: false
+        logging: true
+        domains:
+          enabled: true
+          domainsList:
+            - main: "*.pikube.movishell.pl"
+            - sans:
+              - "pikube.movishell.pl"
+        dnsProvider:
+          name: "ovh"
+          ovh:
+            OVH_ENDPOINT: "ovh-eu"
+            OVH_APPLICATION_KEY: "doj03FOBncx52rNV"
+            OVH_APPLICATION_SECRET: "RMK4g0lDwrShUh5g08ZoOrDYJfNAnFdi"
+            OVH_CONSUMER_KEY: "RpCcPPog8pjCwoyw5VYoN5UxYh6tEoSV"
+        email: "admin@movishell.pl"
+    - rbac:
+        enabled: true
+    - dashboard:
+        enabled: true
+        domain: traefik.pikube.movishell.pl
+        ingress:
+          annotations:
+            traefik.ingress.kubernetes.io/whitelist-source-range: "10.1.1.0/24, 10.5.1.0/24, 10.254.1.0/24"
